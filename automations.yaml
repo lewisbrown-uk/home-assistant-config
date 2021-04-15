@@ -1,0 +1,116 @@
+- id: '1617732790464'
+  alias: Purple Automation
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: purple
+  condition: []
+  action:
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.purple_time
+    data:
+      timestamp: '{{ now().timestamp() }}'
+  mode: single
+- id: '1617739046176'
+  alias: Blue Automation
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: blue
+  condition: []
+  action:
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.blue_time
+    data:
+      timestamp: '{{ now().timestamp() }}'
+  mode: single
+- id: '1617739231521'
+  alias: Green Automation
+  description: ''
+  trigger:
+  - platform: webhook
+    webhook_id: green
+  condition: []
+  action:
+  - service: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.green_time
+    data:
+      timestamp: '{{ now().timestamp() }}'
+  mode: single
+- id: 8a6554aa-9c1e-11eb-a8b3-0242ac130003
+  alias: IFTTT Withings bed status notification - off
+  description: Updates bed status based on IFTTT hook
+  trigger:
+  - event_data:
+      action: withings_bed_status
+    event_type: ifttt_webhook_received
+    platform: event
+  condition:
+  - condition: template
+    value_template: '{{ trigger.event.data.status == ''0''}}'
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.bed_status
+- id: a730a516-9c4c-11eb-a8b3-0242ac130003
+  alias: IFTTT Withings bed status notification - on
+  description: Updates bed status based on IFTTT hook
+  trigger:
+  - event_data:
+      action: withings_bed_status
+    event_type: ifttt_webhook_received
+    platform: event
+  condition:
+  - condition: template
+    value_template: '{{ trigger.event.data.status == ''1''}}'
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.bed_status
+- id: 55b1e7c6-d69b-4d69-a41b-d2e092fadea6
+  alias: System - Alert acknowledgement action
+  description: Disables alert via actionable alert.
+  initial_state: true
+  mode: single
+  trigger:
+  - platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: ALERT_ACKNOWLEDGEMENT_DISABLE
+  condition: []
+  action:
+  - service: alert.turn_off
+    data_template:
+      entity_id: '{{ trigger.event.data.action_data.entity_id }}'
+  - service: notify.mobile_app_lewissiphone
+    data_template:
+      title: Alert disabled
+      message: Alert "{{trigger.event.data.action_data.entity_id}}" has been disabled.
+- id: '1618464159498'
+  alias: Turn off lights in Lewis's Room at 8 a.m. every day
+  description: ''
+  trigger:
+  - platform: time
+    at: 08:00:00
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 6b3825e313ac290e1daf14c0234aea75
+    entity_id: light.bedroom_chest
+    domain: light
+  - type: turn_off
+    device_id: fdfb83973207f28ae4c746660d6dd5bd
+    entity_id: light.bedroom_corner
+    domain: light
+  - type: turn_off
+    device_id: aa2c49ef5c8bc897e98019dc91d649a7
+    entity_id: light.bedside
+    domain: light
+  - type: turn_off
+    device_id: 8ce7d240cbd1b2389416ed8cd0d8addb
+    entity_id: light.bedroom_overhead
+    domain: light
+  mode: single

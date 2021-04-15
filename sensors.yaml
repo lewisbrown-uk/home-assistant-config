@@ -1,0 +1,53 @@
+# - platform: uhooair
+#   email: brown.lewis.r@gmail.com
+#   password: !secret uhoo_password
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'
+    - 'date_time_utc'
+    - 'date_time_iso'
+    - 'time_date'
+    - 'time_utc'
+- platform: template
+  sensors:
+    time_since_blue:
+      friendly_name: 'Time since blue pills taken'
+      unit_of_measurement: 'seconds'
+      value_template: '{{as_timestamp(now())-as_timestamp(states("input_datetime.blue_time"))}}'
+    time_since_green:
+      friendly_name: 'Time since green pills taken'
+      unit_of_measurement: 'seconds'
+      value_template: '{{as_timestamp(now())-as_timestamp(states("input_datetime.green_time"))}}'
+    time_since_purple:
+      friendly_name: 'Time since purple pills taken'
+      unit_of_measurement: 'seconds'
+      value_template: '{{as_timestamp(now())-as_timestamp(states("input_datetime.purple_time"))}}'
+    fridge_amps:
+      friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Current"
+      value_template: "{{ state_attr('switch.fridge','current_a') | float }}"
+      unit_of_measurement: "A"
+    fridge_watts:
+      friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Power"
+      value_template: "{{ state_attr('switch.fridge','current_power_w') | float }}"
+      unit_of_measurement: "W"
+    fridge_total_kwh:
+      friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Total Energy"
+      value_template: "{{ state_attr('switch.fridge','total_energy_kwh') | float }}"
+      unit_of_measurement: "kWh"
+    fridge_volts:
+      friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Voltage"
+      value_template: "{{ state_attr('switch.fridge','voltage') | float }}"
+      unit_of_measurement: "V"
+    fridge_today_kwh:
+      friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Today's Energy"
+      value_template: "{{ state_attr('switch.fridge','today_energy_kwh') | float }}"
+      unit_of_measurement: "kWh"
+# TODO: debug why this is always unavailable
+- platform: scrape
+  resource: https://www.kissgyms.com/headcount.php
+  name: Kiss Gym Acton Occupancy
+  select: ".circle-capacity,.circle-capacityred,.circle-capacitygreen"
+  index: 3
+  unit_of_measurement: "percent"

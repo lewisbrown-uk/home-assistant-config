@@ -1,0 +1,180 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Enable the cloud component
+cloud:
+
+logger:
+  default: warning
+  logs:
+    homesassistant.components.scrape.sensor: debug
+
+# Hive Home service
+#hive:
+#  username: !secret hive_username
+#  password: !secret hive_password
+
+# Device trackers
+device_tracker:
+  - platform: bt_smarthub
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+input_datetime:
+  purple_time:
+    has_date: yes
+    has_time: yes
+    name: Time purple pills taken
+    icon: mid:pill
+  green_time:
+    has_date: yes
+    has_time: yes
+    name: Time green pills taken
+    icon: mdi:pill
+  blue_time:
+    has_date: yes
+    has_time: yes
+    name: Time blue pills taken
+    icon: mdi:pill
+
+# Track bed status from Withings Sleep sensor until HA Withings integration is working
+input_boolean:
+  bed_status:
+    name: IFTTT Withings bed status
+    icon: mdi:bed-outline
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+mqtt:
+  broker: !secret mqtt_broker_ip
+
+withings:
+  client_id: !secret withings_client_id
+  client_secret: !secret withings_client_secret
+  use_webhook: true
+
+ifttt:
+  key: !secret ifttt_key
+
+sensor: !include sensors.yaml
+
+binary_sensor:
+  - platform: template
+    sensors:
+      purple_overdue:
+        friendly_name: 'Purple pills overdue'
+        value_template: '{{now().hour>=21 and (as_timestamp(now()) - as_timestamp(states("input_datetime.purple_time")))>14400}}'
+      blue_overdue:
+        friendly_name: 'Blue pills overdue'
+        value_template: '{{now().hour>=8 and (as_timestamp(now()) - as_timestamp(states("input_datetime.blue_time")))>70000}}'
+      green_overdue:
+        friendly_name: 'Green pills overdue'
+        value_template: '{{as_timestamp(states("input_datetime.blue_time"))>as_timestamp(states("input_datetime.green_time")) and (as_timestamp(now()) - as_timestamp(states("input_datetime.blue_time")))>21600}}'
+
+notify:
+  - platform: group
+    name: alert_medication
+    services:
+  
+      - service: mobile_app_lewissiphone
+        data_template:
+          # title: ''
+          # message: ''
+          data:
+            apns_headers:
+              apns-collapse-id: 'alert_medication'
+            push:
+              category: 'alert_acknowledgement'
+              action_data:
+                entity_id: alert.green_overdue
+
+alert:
+  green_overdue:
+    name: 'Green pills overdue'
+    entity_id: binary_sensor.green_overdue
+    state: 'on'
+    repeat: 10
+    can_acknowledge: true
+    title: 'Take Medication'
+    message: 'Green medication overdue - take now!'
+    done_message: 'Taken'
+    notifiers:
+      - alert_medication
+    data:
+      apns_headers:
+        apns_collapse_id: 'alert_acknowledgement'
+      push:
+        category: 'alert_acknowledgement'
+        sound:
+          name: default
+          critical: 1
+          volume: 1.0
+      action_data:
+        entity_id: alert.green_overdue
+  blue_overdue:
+    name: 'Blue pills overdue'
+    entity_id: binary_sensor.blue_overdue
+    state: 'on'
+    repeat: 1
+    can_acknowledge: true
+    title: 'Take Medication'
+    message: 'Blue medication overdue - take now!'
+    done_message: 'Taken'
+    notifiers:
+      - alert_medication
+    data:
+      apns_headers:
+        apns_collapse_id: 'alert_acknowledgement'
+      push:
+        sound:
+          name: default
+          critical: 1
+          volume: 1.0
+        category: 'alert_acknowledgement'
+      action_data:
+        entity_id: alert.blue_overdue
+  purple_overdue:
+    name: 'Purple pills overdue'
+    entity_id: binary_sensor.purple_overdue
+    state: 'on'
+    repeat: 10
+    can_acknowledge: true
+    title: 'Take Medication'
+    message: 'Purple medication overdue - take now!'
+    done_message: 'Taken'
+    notifiers:
+      - alert_medication
+    data:
+      apns_headers:
+        apns_collapse_id: 'alert_acknowledgement'
+      push:
+        category: 'alert_acknowledgement'
+      action_data:
+        entity_id: alert.purple_overdue
+
+ios:
+  push:
+    categories:
+      - name: Alert
+        identifier: 'alert_acknowledgement'
+        actions:
+        
+          - identifier: 'alert_acknowledgement_disable'
+            title: 'Disable alert?'
+            authenticationRequired: false
+            destructive: true
+            behavior: 'default'
+            activationMode: 'background'
+            
+
+
+
+
+
+
