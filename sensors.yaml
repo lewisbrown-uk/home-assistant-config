@@ -11,6 +11,7 @@
     - 'time_date'
     - 'time_utc'
 - platform: template
+  # Medication reminder system
   sensors:
     time_since_blue:
       friendly_name: 'Time since blue pills taken'
@@ -24,26 +25,207 @@
       friendly_name: 'Time since purple pills taken'
       unit_of_measurement: 'seconds'
       value_template: '{{as_timestamp(now())-as_timestamp(states("input_datetime.purple_time"))}}'
+      
+    # Kasa energy monitoring - current
+    dishwasher_amps:
+      friendly_name_template: "{{ state_attr('switch.dishwasher','friendly_name') }} Current"
+      value_template: "{{ state_attr('switch.dishwasher','current_a') | float }}"
+      device_class: "current"
+      unit_of_measurement: "A"
     fridge_amps:
       friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Current"
       value_template: "{{ state_attr('switch.fridge','current_a') | float }}"
+      device_class: "current"
       unit_of_measurement: "A"
+    kitchen_cabinet_lights_etc_amps:
+      friendly_name_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','friendly_name') }} Current"
+      value_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','current_a') | float }}"
+      device_class: "current"
+      unit_of_measurement: "A"
+    office_equipment_amps:
+      friendly_name_template: "{{ state_attr('switch.office_equipment','friendly_name') }} Current"
+      value_template: "{{ state_attr('switch.office_equipment','current_a') | float }}"
+      device_class: "current"
+      unit_of_measurement: "A"
+    ooler_etc_amps:
+      friendly_name_template: "{{ state_attr('switch.ooler_etc','friendly_name') }} Current"
+      value_template: "{{ state_attr('switch.ooler_etc','current_a') | float }}"
+      device_class: "current"
+      unit_of_measurement: "A"
+    washing_machine_amps:
+      friendly_name_template: "{{ state_attr('switch.washing_machine','friendly_name') }} Current"
+      value_template: "{{ state_attr('switch.washing_machine','current_a') | float }}"
+      device_class: "current"
+      unit_of_measurement: "A"
+    # Kasa energy monitoring - power
+    dishwasher_watts:
+      friendly_name_template: "{{ state_attr('switch.dishwasher','friendly_name') }} Power"
+      value_template: "{{ state_attr('switch.dishwasher','current_power_w') | float }}"
+      device_class: "power"
+      unit_of_measurement: "W"
     fridge_watts:
       friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Power"
       value_template: "{{ state_attr('switch.fridge','current_power_w') | float }}"
+      device_class: "power"
       unit_of_measurement: "W"
+    kitchen_cabinet_lights_etc_watts:
+      friendly_name_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','friendly_name') }} Power"
+      value_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','current_power_w') | float }}"
+      device_class: "power"
+      unit_of_measurement: "W"
+    office_equipment_watts:
+      friendly_name_template: "{{ state_attr('switch.office_equipment','friendly_name') }} Power"
+      value_template: "{{ state_attr('switch.office_equipment','current_power_w') | float }}"
+      device_class: "power"
+      unit_of_measurement: "W"
+    ooler_etc_watts:
+      friendly_name_template: "{{ state_attr('switch.ooler_etc','friendly_name') }} Power"
+      value_template: "{{ state_attr('switch.ooler_etc','current_power_w') | float }}"
+      device_class: "power"
+      unit_of_measurement: "W"
+    washing_machine_watts:
+      friendly_name_template: "{{ state_attr('switch.washing_machine','friendly_name') }} Power"
+      value_template: "{{ state_attr('switch.washing_machine','current_power_w') | float }}"
+      device_class: "power"
+      unit_of_measurement: "W"
+    # Kasa energy monitoring - total energy
+    dishwasher_total_kwh:
+      friendly_name_template: "{{ state_attr('switch.dishwasher','friendly_name') }} Total Energy"
+      value_template: "{{ state_attr('switch.dishwasher','total_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
     fridge_total_kwh:
       friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Total Energy"
       value_template: "{{ state_attr('switch.fridge','total_energy_kwh') | float }}"
+      device_class: "energy"
       unit_of_measurement: "kWh"
+    kitchen_cabinet_lights_etc_total_kwh:
+      friendly_name_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','friendly_name') }} Total Energy"
+      value_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','total_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+    office_equipment_total_kwh:
+      friendly_name_template: "{{ state_attr('switch.office_equipment','friendly_name') }} Total Energy"
+      value_template: "{{ state_attr('switch.office_equipment','total_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+    ooler_etc_total_kwh:
+      friendly_name_template: "{{ state_attr('switch.ooler_etc','friendly_name') }} Total Energy"
+      value_template: "{{ state_attr('switch.ooler_etc','total_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+    washing_machine_total_kwh:
+      friendly_name_template: "{{ state_attr('switch.washing_machine','friendly_name') }} Total Energy"
+      value_template: "{{ state_attr('switch.washing_machine','total_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+    # Kasa energy monitoring - voltage
+    dishwasher_volts:
+      friendly_name_template: "{{ state_attr('switch.dishwasher','friendly_name') }} Voltage"
+      value_template: "{{ state_attr('switch.dishwasher','voltage') | float }}"
+      device_class: "voltage"
+      unit_of_measurement: "V"
     fridge_volts:
       friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Voltage"
       value_template: "{{ state_attr('switch.fridge','voltage') | float }}"
+      device_class: "voltage"
       unit_of_measurement: "V"
+    kitchen_cabinet_lights_etc_volts:
+      friendly_name_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','friendly_name') }} Voltage"
+      value_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','voltage') | float }}"
+      device_class: "voltage"
+      unit_of_measurement: "V"
+    office_equipment_volts:
+      friendly_name_template: "{{ state_attr('switch.office_equipment','friendly_name') }} Voltage"
+      value_template: "{{ state_attr('switch.office_equipment','voltage') | float }}"
+      device_class: "voltage"
+      unit_of_measurement: "V"
+    ooler_etc_volts:
+      friendly_name_template: "{{ state_attr('switch.ooler_etc','friendly_name') }} Voltage"
+      value_template: "{{ state_attr('switch.ooler_etc','voltage') | float }}"
+      device_class: "voltage"
+      unit_of_measurement: "V"
+    washing_machine_volts:
+      friendly_name_template: "{{ state_attr('switch.washing_machine','friendly_name') }} Voltage"
+      value_template: "{{ state_attr('switch.washing_machine','voltage') | float }}"
+      device_class: "voltage"
+      unit_of_measurement: "V"
+    # Kasa energy monitoring - daily energy
+    dishwasher_today_kwh:
+      friendly_name_template: "{{ state_attr('switch.dishwasher','friendly_name') }} Today's Energy"
+      value_template: "{{ state_attr('switch.dishwasher','today_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
     fridge_today_kwh:
       friendly_name_template: "{{ state_attr('switch.fridge','friendly_name') }} Today's Energy"
       value_template: "{{ state_attr('switch.fridge','today_energy_kwh') | float }}"
+      device_class: "energy"
       unit_of_measurement: "kWh"
+    kitchen_cabinet_lights_etc_today_kwh:
+      friendly_name_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','friendly_name') }} Today's Energy"
+      value_template: "{{ state_attr('switch.kitchen_cabinet_lights_etc','today_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+    office_equipment_today_kwh:
+      friendly_name_template: "{{ state_attr('switch.office_equipment','friendly_name') }} Today's Energy"
+      value_template: "{{ state_attr('switch.office_equipment','today_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+    ooler_etc_today_kwh:
+      friendly_name_template: "{{ state_attr('switch.ooler_etc','friendly_name') }} Today's Energy"
+      value_template: "{{ state_attr('switch.ooler_etc','today_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+    washing_machine_today_kwh:
+      friendly_name_template: "{{ state_attr('switch.washing_machine','friendly_name') }} Today's Energy"
+      value_template: "{{ state_attr('switch.washing_machine','today_energy_kwh') | float }}"
+      device_class: "energy"
+      unit_of_measurement: "kWh"
+
+    total_monitored_power:
+      friendly_name: "Total monitored power"
+      value_template: >
+        {{ (state_attr('switch.dishwasher','current_power_w') | float +  
+            state_attr('switch.fridge','current_power_w') | float +
+            state_attr('switch.kitchen_cabinet_lights_etc','current_power_w') | float +
+            state_attr('switch.office_equipment','current_power_w') | float +
+            state_attr('switch.ooler_etc','current_power_w') | float +
+            state_attr('switch.washing_machine','current_power_w') | float) | round(1)
+        }}
+      device_class: "power"
+      unit_of_measurement: "W"
+
+    mean_voltage:
+      friendly_name: "Mains voltage"
+      value_template: >
+        {{ ((state_attr('switch.dishwasher','voltage') | float +  
+            state_attr('switch.fridge','voltage') | float +
+            state_attr('switch.kitchen_cabinet_lights_etc','voltage') | float +
+            state_attr('switch.office_equipment','voltage') | float +
+            state_attr('switch.ooler_etc','voltage') | float +
+            state_attr('switch.washing_machine','voltage') | float)
+            / 6) | round(2) | float
+        }}
+      device_class: "voltage"
+      unit_of_measurement: "V"
+
+    # Hue motion sensor battery levels
+    bathroom_motion_sensor_battery:
+      friendly_name_template: "{{ state_attr('binary_sensor.bathroom_sensor_motion', 'friendly_name') }} battery level"
+      value_template: "{{ state_attr('binary_sensor.bathroom_sensor_motion', 'battery_level') }}"
+      device_class: "battery"
+      unit_of_measurement: "%"
+    kitchen_motion_sensor_battery:
+      friendly_name_template: "{{ state_attr('binary_sensor.kitchen_sensor_motion', 'friendly_name') }} battery level"
+      value_template: "{{ state_attr('binary_sensor.kitchen_sensor_motion', 'battery_level') }}"
+      device_class: "battery"
+      unit_of_measurement: "%"
+    hall_motion_sensor_battery:
+      friendly_name_template: "{{ state_attr('binary_sensor.hall_sensor_motion', 'friendly_name') }} battery level"
+      value_template: "{{ state_attr('binary_sensor.hall_sensor_motion', 'battery_level') }}"
+      device_class: "battery"
+      unit_of_measurement: "%"
+
 # TODO: debug why this is always unavailable
 - platform: scrape
   resource: https://www.kissgyms.com/headcount.php
@@ -51,3 +233,4 @@
   select: ".circle-capacity,.circle-capacityred,.circle-capacitygreen"
   index: 3
   unit_of_measurement: "percent"
+
